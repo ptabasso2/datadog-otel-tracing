@@ -1,3 +1,6 @@
+![GitHub](https://img.shields.io/github/license/ptabasso2/datadog-otel-tracing?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/ptabasso2/datadog-otel-tracing)
+![GitHub last commit](https://img.shields.io/github/last-commit/ptabasso2/datadog-otel-tracing)
 
 
 # Instrumenting an application using Datadog java agent and custom tracing based on the OpenTelemetry API
