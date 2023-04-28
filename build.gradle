@@ -1,0 +1,30 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'java'
+}
+
+group 'com.datadog.pej'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.datadoghq:dd-trace-ot:1.6.0'
+    implementation 'io.opentelemetry:opentelemetry-api:1.23.1'
+    implementation 'io.opentelemetry:opentelemetry-sdk:1.23.1'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.23.1'
+    implementation 'io.opentelemetry:opentelemetry-semconv:1.23.1-alpha'
+
+}
+
+
+shadowJar {
+    manifest{
+        attributes 'Main-Class': 'com.datadog.pej.OtelCustomInstrum'
+    }
+    archiveVersion.set("0.2.0")
+    archiveFileName = "datadog-otel-tracing-${getArchiveVersion().get()}.jar"
+}
+
