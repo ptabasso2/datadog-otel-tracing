@@ -110,6 +110,98 @@ The main components of this project can be described as follows:
 + Two distinct methods `doSomeStuffAsParent()` and `doSomeStuffAsChild()` that shows how to create spans that have a parent/child dependancy </br>
 + Two other methods `doSomeStuffInjecting()` and `doSomeStuffExtracting()` showing how context propagation can be used through Otel propagators.
 
+The notable parts of this program can be broken down as follows:
+
+### Dependancies
+
+We need the following dependancies to be able to use OpenTelemetry for custom instrumentation. 
+
+The `build.gradle` file can be updated as follows:
+
+```java
+dependencies {
+    implementation 'io.opentelemetry:opentelemetry-api:1.23.1'
+    implementation 'io.opentelemetry:opentelemetry-semconv:1.23.1-alpha'
+}
+```
+
+
+### Accessing the tracer
+
+```java
+static Tracer tracer = GlobalOpenTelemetry.get().getTracer("instrumentationName");
+```
+
+
+### Example of span creation
+
+```java
+Span parentSpan = tracer.spanBuilder("parent").
+                setAttribute("span.type", "web").setAttribute("resource.name", "GET /parent").
+                startSpan();
+
+        try (Scope scope = parentSpan.makeCurrent()) {
+            doSomeStuffAsChild();
+        } finally {
+            parentSpan.end();
+        }
+```
+
+
+### Example of context propagation 
+
+Injecting the context
+
+```java
+Span spaninject = tracer.spanBuilder("inject").
+                setAttribute("span.type", "web").setAttribute("resource.name", "GET /inject").
+                startSpan();
+
+        try (Scope scope = spaninject.makeCurrent()) {
+            Map<String, String> headers = new HashMap<>();
+
+            W3CTraceContextPropagator.getInstance().inject(Context.current(), headers, (carrier, key, value) -> headers.put(key, value));
+
+            System.out.println("After filling the headers");
+            doSomeStuffExtracting(headers);
+
+
+        } finally {
+            spaninject.end();
+        }
+```
+
+
+
+Extracting the context
+
+```java
+Context extractedContext = W3CTraceContextPropagator.getInstance().extract(Context.current(), headers, new TextMapGetter<>() {
+            @Override
+            public Iterable<String> keys(Map<String, String> extractedheader) {
+                return headers.values();
+            }
+
+            @Override
+            public String get(Map<String, String> extractedheader, String key) {
+                return headers.get(key);
+            }
+        });
+
+        System.out.println("After extracting headers");
+
+        try (Scope scope = extractedContext.makeCurrent()) {
+            Span spanextract = tracer.spanBuilder("extract").
+                    setAttribute("span.type", "web").setAttribute("resource.name", "GET /extract").
+                    startSpan();
+            try {
+                System.out.println("Doing stuff");
+            } finally {
+                spanextract.end();
+            }
+        }
+```
+
 
 ## Building <a name="local"></a> the application and running it locally.
 
@@ -162,6 +254,7 @@ To install the java tracing client, download `dd-java-agent.jar`, which contains
 `wget -O dd-java-agent.jar 'https://dtdg.co/latest-java-tracer'`
 
 But you can skip this as the client is already available in this repo. Now let's build, instrument and run our services.
+In order to allow the OpenTelemetry based custom instrumentation, the following flag needs to be set: `-Ddd.trace.otel.enabled=true` 
 
 
 ### Building and running the application ###
@@ -171,7 +264,7 @@ But you can skip this as the client is already available in this repo. Now let's
 
 BUILD SUCCESSFUL in 10s
 
-[root@pt-instance-6:~/datadog-otel-tracing]$ java -jar build/libs/datadog-otel-tracing-0.2.0.jar
+[root@pt-instance-6:~/datadog-otel-tracing]$ java -javaagent:./dd-java-agent.jar -Ddd.trace.otel.enabled=true -Ddd.service=dd-otel-tracing -Ddd.env=otel -Ddd.version=12 -jar build/libs/datadog-otel-tracing-0.2.0.jar
 After filling the headers
 After extracting headers
 Doing stuff
