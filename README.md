@@ -1,6 +1,4 @@
-![GitHub](https://img.shields.io/github/license/ptabasso2/springblog?style=plastic)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/ptabasso2/springblog)
-![GitHub last commit](https://img.shields.io/github/last-commit/ptabasso2/springblog)
+
 
 # Instrumenting an application using Datadog java agent and custom tracing based on the OpenTelemetry API
 
@@ -121,7 +119,7 @@ And you will also need to have gradle installed, the version used in this exampl
 First set your API Key:
 
 ````shell
-[root@pt-instance-6:~/springblog]$ export DD_API_KEY=<Your api key>
+[root@pt-instance-6:~/datadog-otel-tracing]$ export DD_API_KEY=<Your api key>
 ````
 
 Then let's run the agent. As docker is installed on our environment, we will use a dockerized version of the agent.
@@ -134,7 +132,7 @@ By default, the Datadog Agent is enabled in your `datadog.yaml` file under `apm_
 
 
 ````shell
-[root@pt-instance-6:~/springblog]$ docker run -d --network app --name dd-agent-dogfood-jmx -v /var/run/docker.sock:/var/run/docker.sock:ro \
+[root@pt-instance-6:~/datadog-otel-tracing]$ docker run -d --network app --name dd-agent-dogfood-jmx -v /var/run/docker.sock:/var/run/docker.sock:ro \
 -v /proc/:/host/proc/:ro \
 -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
 -v /home/pej/conf.d/:/etc/datadog-agent/conf.d \
@@ -163,7 +161,7 @@ To install the java tracing client, download `dd-java-agent.jar`, which contains
 But you can skip this as the client is already available in this repo. Now let's build, instrument and run our services.
 
 
-### Building and running **springback** ###
+### Building and running the application ###
 
 ````shell
 [root@pt-instance-6:~/datadog-otel-tracing]$ gradle shadowJar
