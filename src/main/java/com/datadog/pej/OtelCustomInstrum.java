@@ -2,7 +2,7 @@ package com.datadog.pej;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.concurrent.TimeUnit;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
@@ -45,7 +45,11 @@ public class OtelCustomInstrum {
                 setAttribute("span.type", "web").setAttribute("resource.name", "GET /child").
                 startSpan();
         try (Scope scope = childSpan.makeCurrent()) {
+            TimeUnit.SECONDS.sleep(178);
             // do stuff
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             childSpan.end();
         }
