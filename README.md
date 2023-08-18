@@ -26,7 +26,7 @@ The sections of this tutorial are structured as follows
 
 The purpose of this lab is to help familiarizing yourself with using the OpenTelemetry API to perform custom instrumentation activities using the dataod java agent. This is intended to users who wish to benefit from the best of the two worlds as they can leverage some advanced capabilities the Datadog java agent offers (ex Application security, Runtime metrics collection, Continous Profiling, Dynamic instrumentation) while at the same time being able to comply with OpenTelemetry requirements.
 
-
+This lab includes all JVM flags required to leverage the Datadog Java agent capabilities mentioned above.
 
 ## Pre-requisites
 
@@ -36,8 +36,8 @@ The purpose of this lab is to help familiarizing yourself with using the OpenTel
 + Gradle installed (If building & running locally). Ex Gradle 7.5.1
 + Git client
 + A Datadog account with a valid API key
++ A VM or container running on a Linux system (Continuous Profiler does not work on OSX)
 + Your favorite text editor or IDE (Ex Sublime Text, Atom, vscode...)
-
 
 ## Clone the repository
 
@@ -264,7 +264,8 @@ In order to allow the OpenTelemetry based custom instrumentation, the following 
 
 BUILD SUCCESSFUL in 10s
 
-[root@pt-instance-6:~/datadog-otel-tracing]$ java -javaagent:./dd-java-agent.jar -Ddd.trace.otel.enabled=true -Ddd.service=dd-otel-tracing -Ddd.env=otel -Ddd.version=12 -jar build/libs/datadog-otel-tracing-0.2.0.jar
+java -javaagent:./dd-java-agent.jar -Ddd.trace.otel.enabled=true -Ddd.service=dd-otel-tracing -Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256 -Ddd.profiling.ddprof.cpu.enabled=true -Ddd.profiling.ddprof.liveheap.enabled=true -Ddd.profiling.ddprof.cstack=dwarf -Ddd.appsec.enabled=true -Ddd.dynamic.instrumentation.enabled=true -Ddd.env=otel -Ddd.version=12 -Ddd.trace.debug=true -jar build/libs/datadog-otel-tracing-0.2.0.jar
+
 After filling the headers
 After extracting headers
 Doing stuff
