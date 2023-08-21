@@ -35,7 +35,8 @@ This lab includes all JVM flags required to leverage the Datadog Java agent capa
 + A java JDK (If building & running locally). Ex OpenJDK 11 or above
 + Gradle installed (If building & running locally). Ex Gradle 7.5.1
 + Git client
-+ A Datadog account with a valid API key
++ A Datadog account with a valid API key that has [Remote Configuration](https://docs.datadoghq.com/agent/remote_config/?tab=configurationyamlfile#prerequisites) enabled
++ A Datadog agent running version 7.43.0 or higher (v7.47.0+ recommended to enable Remote Configuration by default)
 + A VM or container running on a Linux system (Continuous Profiler does not work on OSX)
 + Your favorite text editor or IDE (Ex Sublime Text, Atom, vscode...)
 
@@ -205,8 +206,8 @@ Context extractedContext = W3CTraceContextPropagator.getInstance().extract(Conte
 
 ## Building <a name="local"></a> the application and running it locally.
 
-These steps assume that you have a JDK installed and configured for your environment. This tutorial has been tested with `OpenJDK 11.0.12`.
-And you will also need to have gradle installed, the version used in this example is `7.5.1`
+These steps assume that you have a JDK installed and configured for your environment. This tutorial has been tested with `OpenJDK 17.0.8`.
+And you will also need to have gradle installed, the version used in this example is `7.6.0`
 
 
 ### Starting the Datadog Agent first ###
@@ -248,7 +249,7 @@ Status: Downloaded newer image for gcr.io/datadoghq/agent:latest-jmx
 2d1eec89c2196d298d1e3edf1e9f879c0fc3be593d96f1469cfacc2cacfc18b4
 ````
 
-In order to instrument our services, we will also need to use a java tracing library (`dd-java-agent.jar`). The minimum version to consider for the java agent is 1.10.0
+In order to instrument our services, we will also need to use a java tracing library (`dd-java-agent.jar`). The version included in the lab is 1.19.1, which supports all Datadog-exclusive features.
 
 To install the java tracing client, download `dd-java-agent.jar`, which contains the Agent class files
 `wget -O dd-java-agent.jar 'https://dtdg.co/latest-java-tracer'`
