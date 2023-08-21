@@ -24,7 +24,15 @@ The sections of this tutorial are structured as follows
 ## Goal of this lab
 
 
-The purpose of this lab is to help familiarizing yourself with using the OpenTelemetry API to perform custom instrumentation activities using the dataod java agent. This is intended to users who wish to benefit from the best of the two worlds as they can leverage some advanced capabilities the Datadog java agent offers (ex Application security, Runtime metrics collection, Continous Profiling, Dynamic instrumentation) while at the same time being able to comply with OpenTelemetry requirements.
+The purpose of this lab is to help familiarizing yourself with using the OpenTelemetry API to perform custom instrumentation activities using the dataod java agent. This is intended to users who wish to benefit from the best of the two worlds as they can leverage some advanced capabilities the Datadog Java agent offers, including:
+
++ Application Security Management
++ Runtime metrics collection
++ Continous Profiler
++ Dynamic Instrumentation
++ Remote Configuration
+
+while at the same time being able to comply with OpenTelemetry API specification.
 
 This lab includes all JVM flags required to leverage the Datadog Java agent capabilities mentioned above.
 
