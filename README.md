@@ -24,9 +24,17 @@ The sections of this tutorial are structured as follows
 ## Goal of this lab
 
 
-The purpose of this lab is to help familiarizing yourself with using the OpenTelemetry API to perform custom instrumentation activities using the dataod java agent. This is intended to users who wish to benefit from the best of the two worlds as they can leverage some advanced capabilities the Datadog java agent offers (ex Application security, Runtime metrics collection, Continous Profiling, Dynamic instrumentation) while at the same time being able to comply with OpenTelemetry requirements.
+The purpose of this lab is to help familiarizing yourself with using the OpenTelemetry API to perform custom instrumentation activities using the dataod java agent. This is intended to users who wish to benefit from the best of the two worlds as they can leverage capabilities available only in Datadog tracing libraries, including:
 
++ Application Security Management
++ Runtime metrics collection
++ Continous Profiler
++ Dynamic Instrumentation
++ Remote Configuration
 
+while at the same time conforming to OpenTelemetry API specifications.
+
+This lab includes all JVM flags required to leverage the Datadog Java agent capabilities mentioned above.
 
 ## Pre-requisites
 
@@ -35,9 +43,10 @@ The purpose of this lab is to help familiarizing yourself with using the OpenTel
 + A java JDK (If building & running locally). Ex OpenJDK 11 or above
 + Gradle installed (If building & running locally). Ex Gradle 7.5.1
 + Git client
-+ A Datadog account with a valid API key
++ A Datadog account with a valid API key that has [Remote Configuration](https://docs.datadoghq.com/agent/remote_config/?tab=configurationyamlfile#prerequisites) enabled
++ A Datadog agent running version 7.43.0 or higher (v7.47.0+ recommended to enable Remote Configuration by default)
++ A VM or container running on a Linux system (Continuous Profiler does not work on OSX)
 + Your favorite text editor or IDE (Ex Sublime Text, Atom, vscode...)
-
 
 ## Clone the repository
 
@@ -205,8 +214,8 @@ Context extractedContext = W3CTraceContextPropagator.getInstance().extract(Conte
 
 ## Building <a name="local"></a> the application and running it locally.
 
-These steps assume that you have a JDK installed and configured for your environment. This tutorial has been tested with `OpenJDK 11.0.12`.
-And you will also need to have gradle installed, the version used in this example is `7.5.1`
+These steps assume that you have a JDK installed and configured for your environment. This tutorial has been tested with `OpenJDK 17.0.8`.
+And you will also need to have gradle installed, the version used in this example is `7.6.0`
 
 
 ### Starting the Datadog Agent first ###
@@ -248,7 +257,7 @@ Status: Downloaded newer image for gcr.io/datadoghq/agent:latest-jmx
 2d1eec89c2196d298d1e3edf1e9f879c0fc3be593d96f1469cfacc2cacfc18b4
 ````
 
-In order to instrument our services, we will also need to use a java tracing library (`dd-java-agent.jar`). The minimum version to consider for the java agent is 1.10.0
+In order to instrument our services, we will also need to use a java tracing library (`dd-java-agent.jar`). The version included in the lab is 1.19.1, which supports all Datadog-exclusive features.
 
 To install the java tracing client, download `dd-java-agent.jar`, which contains the Agent class files
 `wget -O dd-java-agent.jar 'https://dtdg.co/latest-java-tracer'`
@@ -264,7 +273,8 @@ In order to allow the OpenTelemetry based custom instrumentation, the following 
 
 BUILD SUCCESSFUL in 10s
 
-[root@pt-instance-6:~/datadog-otel-tracing]$ java -javaagent:./dd-java-agent.jar -Ddd.trace.otel.enabled=true -Ddd.service=dd-otel-tracing -Ddd.env=otel -Ddd.version=12 -jar build/libs/datadog-otel-tracing-0.2.0.jar
+java -javaagent:./dd-java-agent.jar -Ddd.trace.otel.enabled=true -Ddd.service=dd-otel-tracing -Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256 -Ddd.profiling.ddprof.cpu.enabled=true -Ddd.profiling.ddprof.liveheap.enabled=true -Ddd.profiling.ddprof.cstack=dwarf -Ddd.appsec.enabled=true -Ddd.dynamic.instrumentation.enabled=true -Ddd.env=otel -Ddd.version=12 -Ddd.trace.debug=true -jar build/libs/datadog-otel-tracing-0.2.0.jar
+
 After filling the headers
 After extracting headers
 Doing stuff
